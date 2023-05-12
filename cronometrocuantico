@@ -1,0 +1,29 @@
+from qiskit import QuantumCircuit, ClassicalRegister, QuantumRegister
+from qiskit import Aer, execute
+import time
+
+# Crear un registro cuántico de 5 qubits y un registro clásico de 5 bits
+qr = QuantumRegister(5)
+cr = ClassicalRegister(5)
+
+# Crear el circuito cuántico
+qc = QuantumCircuit(qr, cr)
+
+# Inicializar el cronómetro
+start_time = time.time()
+
+# Correr el cronómetro durante 10 segundos
+while time.time() - start_time < 10:
+    qc.h(qr[0])
+    qc.measure(qr[0], cr[0])
+    backend = Aer.get_backend('qasm_simulator')
+    job_sim = execute(qc, backend)
+    sim_result = job_sim.result()
+    counts = sim_result.get_counts(qc)
+    if '1' in counts:
+        print("Tiempo transcurrido:", round(time.time() - start_time, 2), "segundos")
+        break
+    qc.reset(qr)
+
+# Mostrar el tiempo total transcurrido
+print("Tiempo total transcurrido:", round(time.time() - start_time, 2), "segundos")
